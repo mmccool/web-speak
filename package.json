@@ -1,11 +1,12 @@
 {
-  "name": "simple-webcam",
+  "name": "web-speak",
   "version": "1.0.0",
-  "description": "Simple Web Camera",
+  "description": "Web Speak",
   "main": "main.js",
   "dependencies": {
     "http": "0.0.0",
-    "http-auth": "^3.2.3"
+    "http-auth": "^3.2.3",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {},
   "scripts": {
@@ -16,12 +17,12 @@
     "url": "git+https://github.com/mmccool/simple-webcam.git"
   },
   "keywords": [
-    "camera"
+    "speak"
   ],
   "author": "Michael McCool",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/mmccool/simple-webcam/issues"
+    "url": "https://github.com/mmccool/web-speak/issues"
   },
-  "homepage": "https://github.com/mmccool/simple-webcam/README.md"
+  "homepage": "https://github.com/mmccool/web-speak/README.md"
 }
