@@ -7,7 +7,7 @@ Instructions and configuration scripts to install as a systemd service.
     su webspeak
     cd
     git clone https://github.com/mmccool/web-speak.git
-    cd webspeak
+    cd web-speak
     npm install # if necessary
     which nodejs  # is this where Node.js is?
     which node    # or is this where Node.js is?

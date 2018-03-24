@@ -6,6 +6,7 @@
   "dependencies": {
     "http": "0.0.0",
     "http-auth": "^3.2.3",
+    "request": "^2.85.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {},

@@ -134,14 +134,11 @@ function serveLocalFile(res,path,contentType,responseCode) {
     });
 }
 
-function serveTD(res,option) {
+function genTD(option,error,success) {
     var path = "/TD.template";
-    var contentType = "application/json";
-    var responseCode = 200;
     fs.readFile(__dirname + path, function(err,template_data) {
         if (err) {
-            res.writeHead(500,{'Content-Type': 'text/plain'});
-            res.end('500 - Internal Error');
+            error();
         } else {
             var data = template_data.toString();
             data = data.replace(/{{{protocol}}}/gi,option.protocol);
@@ -153,21 +150,65 @@ function serveTD(res,option) {
                 data = data.replace(/{{{securityconfig}}}/gi,
                     '"security": ' + security_config + ','
                 );
-                data = data.replace(/{{{security}}}/gi,JSON.stringify(option.security)+',');
+                data = data.replace(/{{{security}}}/gi,
+                    '"security": ' + JSON.stringify(option.security) + ',');
             } else {
                 data = data.replace(/{{{securityconfig}}}/gi,'');
                 data = data.replace(/{{{security}}}/gi,'');
             }
-            res.writeHead(responseCode,{'Content-Type': contentType});
-            res.end(data);
+            success(data);
         }
     });
 }
 
-var frame_basename = "/camera/frame_";
-var frames = [];
-var max_frames = 16;
-var current_frame;
+function serveTD(res,option) {
+    var contentType = "application/ld+json";
+    var responseCode = 200;
+    genTD(
+        option,
+	function () {
+            res.writeHead(500,{'Content-Type': 'text/plain'});
+            res.end('500 - Internal Error');
+        },
+        function (data) {
+            res.writeHead(responseCode,{'Content-Type': contentType});
+            res.end(data);
+        }
+    );
+}
+
+var request = require('request');
+var td_resource = [];
+var td_ttl_s = 600;
+var td_ttl_refresh_ms = (td_ttl_s-100)*1000;
+function regTD(i,option) {
+    genTD(
+        option,
+        function () {
+            console.log('Error generating TD for registration');
+        },
+        function (td) {
+            console.log('Register TD',i);
+            request(
+                {
+                    url: 'http://plugfest.thingweb.io:8081/td?lt='+td_ttl_s,
+                    method: 'POST',
+                    headers: {"Content-Type": "application/ld+json"},
+                    body: td.toString()
+                },
+                function (error, response, body) {
+                    if (error || Math.trunc(response.statusCode/100) != 2) {
+                        console.log('Error registering TD',error,response.statusCode);
+                    } else {
+                        td_resource[i] = body.toString();
+                        console.log(response.statusCode+': TD '+i+' registered to "'+td_resource[i]+'"');
+                    }
+                }
+            );
+        }
+    );
+}
+
 function speak_say(content,done) {
     console.log('saying "'+content+'"');
     child_process.exec(script_say+' "'+content+'"',(error,stdout,stderr) => {
@@ -239,7 +280,7 @@ function server(req,res,option) {
     }
 }
 
-// Start multiple servers (eventually with different options)
+// Start multiple servers (with different options)
 for (let i=0; i<options.length; i++) {
     if (undefined !== options[i].credentials) {
         https.createServer(basic,
@@ -262,3 +303,14 @@ for (let i=0; i<options.length; i++) {
         }
     }
 }
+
+// Register TDs.  Set up with TTL and periodically refresh
+function regAllTDs() {
+    console.log("Registering TDs with options:",options);
+    for (let i=0; i<options.length; i++) {
+   	console.log("Registering TD for server",i);
+        regTD(i,options[i]);
+    }
+}
+regAllTDs();
+setInterval(regAllTDs,td_ttl_refresh_ms);
