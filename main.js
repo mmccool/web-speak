@@ -7,13 +7,13 @@ var hostname = os.hostname();
 var fs = require('fs');
 var security_config = fs.readFileSync(__dirname + "/security.config");
 var uuidv5 = require('uuid/v5');
-var testing = false;
+var testing = true;
 var options = [
     // Local unencrypted, unauthenticated HTTP server
     {
         protocol: "http",
         name: hostname + '.local',
-        port: testing ? 8091 : 8090,
+        port: testing ? 8086 : 8085,
     }
     // Local self-signed HTTPS server (no CA); see certs/create
     ,{
@@ -169,8 +169,8 @@ var frames = [];
 var max_frames = 16;
 var current_frame;
 function speak_say(content,done) {
-    console.log('saying "',content,'"');
-    child_process.exec(script_say+' '+'"'+content+'"',(error,stdout,stderr) => {
+    console.log('saying "'+content+'"');
+    child_process.exec(script_say+' "'+content+'"',(error,stdout,stderr) => {
         done(error,stdout,stderr);
     });
 }
@@ -222,7 +222,7 @@ function server(req,res,option) {
                                 res.end('Internal error - could not perform "say" action');
                             } else {
                                 res.writeHead(200,{'Content-Type': 'text/plain'});
-                                res.end('exposure = '+params.exposure.toString());
+                                res.end('said "'+content+'"');
                             }
                         });
                     });
