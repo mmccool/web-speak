@@ -1,4 +1,4 @@
 #!/bin/sh
 echo "Usage: $0 \"string\""
-# use espeak to say something
-espeak "$1" 
+# use espeak to say something, ignore garbage output
+espeak "$1" 2> /dev/null
