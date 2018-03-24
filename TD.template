@@ -1,0 +1,31 @@
+{
+  "@context": ["https://w3c.github.io/wot/w3c-wot-td-context.jsonld",
+               "https://w3c.github.io/wot/w3c-wot-common-context.jsonld",
+               {
+                   "iot": "http://iotschema.org/",
+                   "http": "http://iotschema.org/protocol/http"
+               }
+  ],
+  "@type": ["Thing"],
+  "name": "Intel-WebSpeak-{{{name}}}",
+  "@id": "urn:uuid:{{{uuid}}}",
+  {{{securityconfig}}}
+  "interaction": [
+    {
+      "@type": ["Action"],
+      "name": "say",
+      "inputSchema": {
+          "type": "string"
+      }, 
+      "form": [
+        {
+          {{{security}}}
+          "href": "{{{base}}}/say",
+          "mediaType": "application/json",
+          "rel": ["invokeAction"],
+          "http:methodName": "POST"
+        }
+      ]
+    }
+  ]
+}

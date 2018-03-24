@@ -1,0 +1,4 @@
+# create self-signed keys
+openssl genrsa -out local/server-key.pem 1024
+openssl req -new -key local/server-key.pem -out local/server-csr.pem
+openssl x509 -req -in local/server-csr.pem -signkey local/server-key.pem -out local/server-cert.pem

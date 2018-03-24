@@ -1,0 +1,14 @@
+[Unit]
+Description=Tiktok Camera Tunnel
+Requires=network.target
+After=network.target
+
+[Service]
+Restart=always
+RestartSec=20
+User=sshtunnel
+ExecStart=/usr/bin/ssh -i /home/sshtunnel/.ssh/id_rsa -NT -o ExitOnForwardFailure=yes -o ServerAliveInterval=60 -o ServerAliveCountMax=4 -R :29443:localhost:19443 relay@tiktok.mmccool.org
+
+[Install]
+WantedBy=multi-user.target
+

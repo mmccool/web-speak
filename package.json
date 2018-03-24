@@ -1,0 +1,27 @@
+{
+  "name": "simple-webcam",
+  "version": "1.0.0",
+  "description": "Simple Web Camera",
+  "main": "main.js",
+  "dependencies": {
+    "http": "0.0.0",
+    "http-auth": "^3.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmccool/simple-webcam.git"
+  },
+  "keywords": [
+    "camera"
+  ],
+  "author": "Michael McCool",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/mmccool/simple-webcam/issues"
+  },
+  "homepage": "https://github.com/mmccool/simple-webcam/README.md"
+}

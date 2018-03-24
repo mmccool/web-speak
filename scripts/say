@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "Usage: $0 \"string\""
+# use espeak to say something
+espeak $1 
