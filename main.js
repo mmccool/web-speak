@@ -5,9 +5,10 @@ var desc = "Web Speak";
 var os = require('os');
 var hostname = os.hostname();
 var fs = require('fs');
-var security_config = fs.readFileSync(__dirname + "/security.config");
+var security_config = 
+    fs.readFileSync(__dirname + "/security.config");
 var uuidv5 = require('uuid/v5');
-var testing = true;
+var testing = false;
 var options = [
     // Local unencrypted, unauthenticated HTTP server
     {
@@ -117,8 +118,8 @@ var basic = auth.basic({
     file: __dirname + "/htpasswd"
 });
 
+// Operation scripts
 var child_process = require('child_process');
-
 var script_say = __dirname + '/scripts/say';
 
 function serveLocalFile(res,path,contentType,responseCode) {
@@ -145,7 +146,7 @@ function genTD(option,error,success) {
             data = data.replace(/{{{name}}}/gi,option.name);
             data = data.replace(/{{{base}}}/gi,option.base);
             data = data.replace(/{{{uuid}}}/gi,option.uuid);
-            console.log(security_config);
+            //console.log("security_config:",security_config.toString());
             if (option.security) {
                 data = data.replace(/{{{securityconfig}}}/gi,
                     '"security": ' + security_config + ','
@@ -177,6 +178,7 @@ function serveTD(res,option) {
     );
 }
 
+// Register TDs
 var request = require('request');
 var td_resource = [];
 var td_ttl_s = 600;
@@ -197,11 +199,15 @@ function regTD(i,option) {
                     body: td.toString()
                 },
                 function (error, response, body) {
-                    if (error || Math.trunc(response.statusCode/100) != 2) {
-                        console.log('Error registering TD',error,response.statusCode);
+                    console.log('Registration response:',
+			JSON.stringify(response));
+                    if (error || !response.statusCode || Math.trunc(response.statusCode/100) != 2) {
+                        console.log('Error registering TD',
+                          error);
                     } else {
                         td_resource[i] = body.toString();
-                        console.log(response.statusCode+': TD '+i+' registered to "'+td_resource[i]+'"');
+                        console.log(response.statusCode +
+                          ': TD '+i+' registered to "'+td_resource[i]+'"');
                     }
                 }
             );
@@ -209,6 +215,7 @@ function regTD(i,option) {
     );
 }
 
+// Operations
 function speak_say(content,done) {
     console.log('saying "'+content+'"');
     child_process.exec(script_say+' "'+content+'"',(error,stdout,stderr) => {
@@ -216,6 +223,7 @@ function speak_say(content,done) {
     });
 }
 
+// Process Post Method
 function processPost(req,res,done) {
     var stringData = '';
     req.on('data', function(data) {
@@ -238,6 +246,7 @@ function processPost(req,res,done) {
     });
 }
 
+// Server for all API entry points
 function server(req,res,option) {
     var path = req.url.replace(/\/?(?:\?.*)?$/,'').toLowerCase();
     var method = req.method;
@@ -312,5 +321,6 @@ function regAllTDs() {
         regTD(i,options[i]);
     }
 }
+
 regAllTDs();
 setInterval(regAllTDs,td_ttl_refresh_ms);
