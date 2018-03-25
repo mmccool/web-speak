@@ -205,7 +205,7 @@ function regTD(i,option) {
                         console.log('Error registering TD',
                           error);
                     } else {
-                        td_resource[i] = body.toString();
+                        td_resource[i] = response.headers.location.toString();
                         console.log(response.statusCode +
                           ': TD '+i+' registered to "'+td_resource[i]+'"');
                     }
