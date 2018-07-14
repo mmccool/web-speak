@@ -46,12 +46,12 @@ var options = [
         port: testing ? 9454 : 9453,
         remote_port: testing ? 29454 : 29453,
         credentials: {
-            key: fs.readFileSync(__dirname + "/certs/portal/privkey1.pem",
+            key: fs.readFileSync(__dirname + "/certs/portal/privkey.pem",
                              {encoding:'utf8'},
                              function(err,data) {
                                 console.log("Error reading key",data);
                              }),
-            cert: fs.readFileSync(__dirname + "/certs/portal/fullchain1.pem",
+            cert: fs.readFileSync(__dirname + "/certs/portal/fullchain.pem",
                              {encoding:'utf8'},
                              function(err,data) {
                                 console.log("Error reading cert",data);
@@ -253,7 +253,7 @@ function server(req,res,option) {
     switch (path) {
         case '':
             res.writeHead(200,{'Content-Type': 'text/plain'});
-            res.end('Simple Web Camera\n');
+            res.end(desc);
             break;
         case '/desc':
             serveLocalFile(res,'/public/DESC.md','text/markdown');
@@ -322,5 +322,5 @@ function regAllTDs() {
     }
 }
 
-regAllTDs();
-setInterval(regAllTDs,td_ttl_refresh_ms);
+// regAllTDs();
+// setInterval(regAllTDs,td_ttl_refresh_ms);
