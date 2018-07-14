@@ -12,12 +12,14 @@ var testing = false;
 var options = [
     // Local unencrypted, unauthenticated HTTP server
     {
+        tdirs: ['http://upsq0.local:8070'],
         protocol: "http",
         name: hostname + '.local',
         port: testing ? 8086 : 8085,
     }
     // Local self-signed HTTPS server (no CA); see certs/create
     ,{
+        tdirs: ['http://upsq0.local:8070'],
         security: ["basic"],
         protocol: "https",
         name: hostname + '.local',
@@ -40,6 +42,7 @@ var options = [
     // Setup below assumes keys generated on remote (publically visible) 
     // server by Let's Encrypt and Certbot
     ,{
+        tdirs: ['http://upsq0.local:8070','http://129.192.70.97:8080'],
         security: ["basic"],
         protocol: "https",
         name: 'portal.mmccool.net',
@@ -68,6 +71,7 @@ var options = [
     }
     // Remote (tunneled) HTTPS server 
     ,{
+        tdirs: ['http://upsq0.local:8070','http://129.192.70.97:8080'],
         security: ["basic"],
         protocol: "https",
         name: 'tiktok.mmccool.org',
@@ -95,7 +99,7 @@ var options = [
         }
     }
 ];
-for (var i in options) {
+for (let i=0; i<options.length; i++) {
     options[i].base = 
 	options[i].protocol + 
 	'://' + 
@@ -176,7 +180,6 @@ function serveTD(res,option) {
 
 // Register TDs
 var request = require('request');
-var tdir = 'http://upsq0.local:8070';
 var td_resource = [];
 var td_ttl_s = 600;
 var td_ttl_refresh_ms = (td_ttl_s-100)*1000;
@@ -187,8 +190,10 @@ function regTD(i,option) {
             console.log('Error generating TD for registration');
         },
         function (td) {
-            console.log('Register TD',i);
-            request(
+            for (let j=0; j<option.tdirs.length; j++) {
+              let tdir = option.tdirs[j];
+              console.log('Register TD',i,'on',tdir);
+              request(
                 {
                     url: tdir + '?lt='+td_ttl_s,
                     method: 'POST',
@@ -196,7 +201,7 @@ function regTD(i,option) {
                     body: td.toString()
                 },
                 function (error, response, body) {
-                    console.log('Registration response:',JSON.stringify(response));
+                    //console.log('Registration response:',JSON.stringify(response));
                     if (error || !response.statusCode || Math.trunc(response.statusCode/100) != 2) {
                         console.log('Error registering TD',
                           error);
@@ -209,7 +214,8 @@ function regTD(i,option) {
                           ': TD '+i+' registered to "'+td_resource[i]+'"');
                     }
                 }
-            );
+              );
+            }
         }
     );
 }
