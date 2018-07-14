@@ -176,6 +176,7 @@ function serveTD(res,option) {
 
 // Register TDs
 var request = require('request');
+var tdir = 'http://upsq0.local:8070';
 var td_resource = [];
 var td_ttl_s = 600;
 var td_ttl_refresh_ms = (td_ttl_s-100)*1000;
@@ -189,19 +190,21 @@ function regTD(i,option) {
             console.log('Register TD',i);
             request(
                 {
-                    url: 'http://plugfest.thingweb.io:8081/td?lt='+td_ttl_s,
+                    url: tdir + '?lt='+td_ttl_s,
                     method: 'POST',
                     headers: {"Content-Type": "application/ld+json"},
                     body: td.toString()
                 },
                 function (error, response, body) {
-                    console.log('Registration response:',
-			JSON.stringify(response));
+                    console.log('Registration response:',JSON.stringify(response));
                     if (error || !response.statusCode || Math.trunc(response.statusCode/100) != 2) {
                         console.log('Error registering TD',
                           error);
                     } else {
-                        td_resource[i] = response.headers.location.toString();
+                        console.log(response.headers);
+                        //td_resource[i] = response.headers.location.toString();
+                        console.log("TD id:",JSON.parse(td).id);
+                        td_resource[i] = JSON.parse(td).id;
                         console.log(response.statusCode +
                           ': TD '+i+' registered to "'+td_resource[i]+'"');
                     }
@@ -318,5 +321,5 @@ function regAllTDs() {
     }
 }
 
-// regAllTDs();
-// setInterval(regAllTDs,td_ttl_refresh_ms);
+regAllTDs();
+setInterval(regAllTDs,td_ttl_refresh_ms);
