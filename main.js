@@ -148,13 +148,9 @@ function genTD(option,error,success) {
             data = data.replace(/{{{uuid}}}/gi,option.uuid);
             //console.log("security_config:",security_config.toString());
             if (option.security) {
-                data = data.replace(/{{{securityconfig}}}/gi,
-                    '"security": ' + security_config + ','
-                );
                 data = data.replace(/{{{security}}}/gi,
                     '"security": ' + JSON.stringify(option.security) + ',');
             } else {
-                data = data.replace(/{{{securityconfig}}}/gi,'');
                 data = data.replace(/{{{security}}}/gi,'');
             }
             success(data);

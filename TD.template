@@ -8,24 +8,20 @@
   ],
   "@type": ["Thing"],
   "name": "Intel-WebSpeak-{{{name}}}",
-  "@id": "urn:uuid:{{{uuid}}}",
-  {{{securityconfig}}}
-  "interaction": [
-    {
-      "@type": ["Action"],
-      "name": "say",
-      "inputSchema": {
+  "id": "urn:uuid:{{{uuid}}}",
+  {{{security}}}
+  "actions": {
+    "say": {
+      "input": {
           "type": "string"
       }, 
-      "form": [
+      "forms": [
         {
-          {{{security}}}
           "href": "{{{base}}}/say",
           "mediaType": "application/json",
-          "rel": ["invokeAction"],
           "http:methodName": "POST"
         }
       ]
     }
-  ]
+  }
 }
