@@ -22,28 +22,28 @@
           "http:methodName": "POST"
         },
         {
-          "href": "{{{portal0}}}:{{{basicport}}}/say",
+          "href": "{{{portal0}}}:{{{basicport}}}/api/say",
           "mediaType": "application/json",
           "rel":"invokeaction",
           "http:methodName": "POST",
           "security": [{"scheme":"basic"}]
         },
         {
-          "href": "{{{portal0}}}:{{{digestport}}}/say",
+          "href": "{{{portal0}}}:{{{digestport}}}/api/say",
           "mediaType": "application/json",
           "rel":"invokeaction",
           "http:methodName": "POST",
           "security": [{"scheme":"digest"}]
         },
         {
-          "href": "{{{portal1}}}:{{{basicport}}}/say",
+          "href": "{{{portal1}}}:{{{basicport}}}/api/say",
           "mediaType": "application/json",
           "rel":"invokeaction",
           "http:methodName": "POST",
           "security": [{"scheme":"basic"}]
         },
         {
-          "href": "{{{portal1}}}:{{{digestport}}}/say",
+          "href": "{{{portal1}}}:{{{digestport}}}/api/say",
           "mediaType": "application/json",
           "rel":"invokeaction",
           "http:methodName": "POST",
