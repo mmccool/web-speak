@@ -6,7 +6,7 @@
                }
   ],
   "@type": ["Thing"],
-  "name": "Intel-WebSpeak-{{{name}}}",
+  "name": "Intel-WebSpeak-{{{hostname}}}",
   "id": "urn:uuid:{{{uuid}}}",
   "security": [{"scheme":"nosec"}],
   "actions": {
@@ -20,6 +20,34 @@
           "mediaType": "application/json",
           "rel":"invokeaction",
           "http:methodName": "POST"
+        },
+        {
+          "href": "{{{portal0}}}:{{{basicport}}}/say",
+          "mediaType": "application/json",
+          "rel":"invokeaction",
+          "http:methodName": "POST",
+          "security": [{"scheme":"basic"}]
+        },
+        {
+          "href": "{{{portal0}}}:{{{digestport}}}/say",
+          "mediaType": "application/json",
+          "rel":"invokeaction",
+          "http:methodName": "POST",
+          "security": [{"scheme":"digest"}]
+        },
+        {
+          "href": "{{{portal1}}}:{{{basicport}}}/say",
+          "mediaType": "application/json",
+          "rel":"invokeaction",
+          "http:methodName": "POST",
+          "security": [{"scheme":"basic"}]
+        },
+        {
+          "href": "{{{portal1}}}:{{{digestport}}}/say",
+          "mediaType": "application/json",
+          "rel":"invokeaction",
+          "http:methodName": "POST",
+          "security": [{"scheme":"digest"}]
         }
       ]
     }

@@ -8,29 +8,19 @@ var fs = require('fs');
 var uuidv5 = require('uuid/v5');
 var testing = false;
 var options = [
-    // Local unencrypted, unauthenticated HTTP server
-    // Authentication and encryption handled by reverse proxy as needed
+    // local unencrypted, unauthenticated HTTP server
     {
         tdirs: [],
-        protocol: "http",
-        name: hostname + '.local',
-        port: testing ? 8086 : 8085,
+        name: "http://" + hostname + '.local',
+        portals: ["https://portal.mmccool.net","https://tiktok.mmccool.net"],
+        port: 8085,
+        basicport: 29453,
+        digestport: 29454
     }
 ];
 for (let i=0; i<options.length; i++) {
-    options[i].base = 
-	options[i].protocol + 
-	'://' + 
-        options[i].name + 
-        (options[i].remote_port ? 
-            ':' + options[i].remote_port :
-	    (options[i].port ? 
-                ":" + options[i].port : 
-                ''
-            )
-        ) +
-        '/api';
-    options[i].uuid = uuidv5(options[i].base, uuidv5.URL);
+    options[i].base = options[i].name + ":" + options[i].port + '/api';
+    options[i].uuid = uuidv5(hostname, uuidv5.URL);
 }
 var http = require('http');
 var https = require('https');
@@ -59,7 +49,11 @@ function genTD(option,error,success) {
             error();
         } else {
             var data = template_data.toString();
-            data = data.replace(/{{{name}}}/gi,option.name);
+            data = data.replace(/{{{hostname}}}/gi,hostname);
+            data = data.replace(/{{{portal0}}}/gi,option.portals[0]);
+            data = data.replace(/{{{portal1}}}/gi,option.portals[1]);
+            data = data.replace(/{{{basicport}}}/gi,option.basicport);
+            data = data.replace(/{{{digestport}}}/gi,option.digestport);
             data = data.replace(/{{{base}}}/gi,option.base);
             data = data.replace(/{{{uuid}}}/gi,option.uuid);
             success(data);
@@ -201,26 +195,10 @@ function server(req,res,option) {
 
 // Start multiple servers (with different options)
 for (let i=0; i<options.length; i++) {
-    if (undefined !== options[i].credentials) {
-        https.createServer(basic,
-                           options[i].credentials,
-                           function(req,res) {server(req,res,options[i])})
-             .listen(options[i].port, function () {
-                console.log(desc,'via HTTPS started on port',options[i].port);
-             });
-    } else {
-        if (options.security) {
-            http.createServer(basic,function(req,res) {server(req,res,options[i])})
-                .listen(options[i].port, function () {
-                    console.log(desc,'via HTTP started on port',options[i].port);
-                });
-        } else {
-            http.createServer(function(req,res) {server(req,res,options[i])})
-                .listen(options[i].port, function () {
-                    console.log(desc,'via HTTP started on port',options[i].port);
-                });
-        }
-    }
+   http.createServer(function(req,res) {server(req,res,options[i])})
+       .listen(options[i].port, function () {
+           console.log(desc,'via HTTP started on port',options[i].port);
+   });
 }
 
 // Register TDs.  Set up with TTL and periodically refresh
