@@ -6,8 +6,10 @@ After=network.target
 [Service]
 Restart=always
 RestartSec=20
-User=webspeak
-ExecStart=/usr/bin/nodejs /home/mmccool/Devel/web-speak/main.js
+User=mmccool
+#User=webspeak
+ExecStart=/usr/bin/nodejs /home/mmccool/web-speak/main.js
+#ExecStart=/usr/bin/nodejs /home/mmccool/Devel/web-speak/main.js
 #ExecStart=/usr/bin/nodejs /home/webspeak/web-speak/main.js
 #ExecStart=/usr/bin/node /home/webspeak/web-speak/main.js
 #ExecStart=/usr/local/bin/node /home/webspeak/web-speak/main.js

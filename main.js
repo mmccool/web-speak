@@ -5,98 +5,16 @@ var desc = "Web Speak";
 var os = require('os');
 var hostname = os.hostname();
 var fs = require('fs');
-var security_config = 
-    fs.readFileSync(__dirname + "/security.config");
 var uuidv5 = require('uuid/v5');
 var testing = false;
 var options = [
     // Local unencrypted, unauthenticated HTTP server
+    // Authentication and encryption handled by reverse proxy as needed
     {
-        tdirs: ['http://upsq0.local:8070'],
+        tdirs: [],
         protocol: "http",
         name: hostname + '.local',
         port: testing ? 8086 : 8085,
-    }
-    // Local self-signed HTTPS server (no CA); see certs/create
-    ,{
-        tdirs: ['http://upsq0.local:8070'],
-        security: ["basic"],
-        protocol: "https",
-        name: hostname + '.local',
-        port: testing ? 8454 : 8453,
-        credentials: {
-        key: fs.readFileSync(__dirname + "/certs/local/server-key.pem", 
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading key",data);
-                             }),
-            cert: fs.readFileSync(__dirname + "/certs/local/server-cert.pem",
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading cert",data);
-                             }),
-            rejectUnauthorized:false
-        }
-    }
-    // Remote (tunneled) HTTPS server 
-    // Setup below assumes keys generated on remote (publically visible) 
-    // server by Let's Encrypt and Certbot
-    ,{
-        tdirs: ['http://upsq0.local:8070','http://129.192.70.97:8080'],
-        security: ["basic"],
-        protocol: "https",
-        name: 'portal.mmccool.net',
-        port: testing ? 9454 : 9453,
-        remote_port: testing ? 29454 : 29453,
-        credentials: {
-            key: fs.readFileSync(__dirname + "/certs/portal/privkey.pem",
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading key",data);
-                             }),
-            cert: fs.readFileSync(__dirname + "/certs/portal/fullchain.pem",
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading cert",data);
-                             }),
-            /*
-            ca: fs.readFileSync(__dirname + "/certs/portal/server.crt",
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading ca",data);
-                             }),
-            */
-            rejectUnauthorized: true
-        }
-    }
-    // Remote (tunneled) HTTPS server 
-    ,{
-        tdirs: ['http://upsq0.local:8070','http://129.192.70.97:8080'],
-        security: ["basic"],
-        protocol: "https",
-        name: 'tiktok.mmccool.org',
-        port: testing ? 19454 : 19453,
-        remote_port: testing ? 29454 : 29453,
-        credentials: {
-            key: fs.readFileSync(__dirname + "/certs/tiktok/privkey.pem",
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading key",data);
-                             }),
-            cert: fs.readFileSync(__dirname + "/certs/tiktok/fullchain.pem", 
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading cert",data);
-                             }),
-            /*
-            ca: fs.readFileSync(__dirname + "/certs/portal/server.crt",
-                             {encoding:'utf8'},
-                             function(err,data) {
-                                console.log("Error reading ca",data);
-                             }),
-            */
-            rejectUnauthorized: true
-        }
     }
 ];
 for (let i=0; i<options.length; i++) {
@@ -116,11 +34,6 @@ for (let i=0; i<options.length; i++) {
 }
 var http = require('http');
 var https = require('https');
-var auth = require('http-auth');
-var basic = auth.basic({
-    realm: "Private",
-    file: __dirname + "/htpasswd"
-});
 
 // Operation scripts
 var child_process = require('child_process');
@@ -146,17 +59,9 @@ function genTD(option,error,success) {
             error();
         } else {
             var data = template_data.toString();
-            data = data.replace(/{{{protocol}}}/gi,option.protocol);
             data = data.replace(/{{{name}}}/gi,option.name);
             data = data.replace(/{{{base}}}/gi,option.base);
             data = data.replace(/{{{uuid}}}/gi,option.uuid);
-            //console.log("security_config:",security_config.toString());
-            if (option.security) {
-                data = data.replace(/{{{security}}}/gi,
-                    '"security": ' + JSON.stringify(option.security) + ',');
-            } else {
-                data = data.replace(/{{{security}}}/gi,'');
-            }
             success(data);
         }
     });
@@ -327,5 +232,5 @@ function regAllTDs() {
     }
 }
 
-regAllTDs();
-setInterval(regAllTDs,td_ttl_refresh_ms);
+//regAllTDs();
+//setInterval(regAllTDs,td_ttl_refresh_ms);
