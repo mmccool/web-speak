@@ -12,10 +12,10 @@ var options = [
     {
         tdirs: [],
         name: "http://" + hostname + '.local',
-        portals: ["https://portal.mmccool.net","https://tiktok.mmccool.net"],
+        portals: ["https://portal.mmccool.net","https://tiktok.mmccool.org"],
         port: 8085,
-        basicport: 29453,
-        digestport: 29454
+        basicport: 8096,
+        digestport: 8097
     }
 ];
 for (let i=0; i<options.length; i++) {
