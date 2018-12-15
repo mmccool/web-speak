@@ -8,7 +8,12 @@
   "@type": ["Thing"],
   "name": "Intel-WebSpeak-{{{hostname}}}",
   "id": "urn:uuid:{{{uuid}}}",
-  "security": [{"scheme":"nosec"}],
+  "securityDefinitions": {
+    "nosec_sc": {"scheme":"nosec"},
+    "basic_sc": {"scheme":"basic"},
+    "digest_sc": {"scheme":"digest"}
+  },
+  "security": ["nosec_sc"],
   "actions": {
     "say": {
       "input": {
@@ -17,37 +22,37 @@
       "forms": [
         {
           "href": "{{{base}}}/say",
-          "mediaType": "application/json",
+          "contentType": "application/json",
           "op":"invokeaction",
           "http:methodName": "POST"
         },
         {
           "href": "{{{portal0}}}:{{{basicport}}}/api/say",
-          "mediaType": "application/json",
+          "contentType": "application/json",
           "op":"invokeaction",
           "http:methodName": "POST",
-          "security": [{"scheme":"basic"}]
+          "security": ["basic_sc"]
         },
         {
           "href": "{{{portal0}}}:{{{digestport}}}/api/say",
-          "mediaType": "application/json",
+          "contentType": "application/json",
           "op":"invokeaction",
           "http:methodName": "POST",
-          "security": [{"scheme":"digest"}]
+          "security": ["digest_sc"]
         },
         {
           "href": "{{{portal1}}}:{{{basicport}}}/api/say",
-          "mediaType": "application/json",
+          "contentType": "application/json",
           "op":"invokeaction",
           "http:methodName": "POST",
-          "security": [{"scheme":"basic"}]
+          "security": ["basic_sc"]
         },
         {
           "href": "{{{portal1}}}:{{{digestport}}}/api/say",
-          "mediaType": "application/json",
+          "contentType": "application/json",
           "op":"invokeaction",
           "http:methodName": "POST",
-          "security": [{"scheme":"digest"}]
+          "security": ["digest_sc"]
         }
       ]
     }
