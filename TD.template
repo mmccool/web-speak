@@ -7,6 +7,14 @@
   ],
   "@type": ["Thing"],
   "name": "Intel-WebSpeak-{{{hostname}}}",
+  "description": "A simple text to speech service",
+  "support": "mailto:michael.mccool@intel.com",
+  "version": {"instance":"0.1.0"},
+  "links": [{
+        "href": "https://github.com/mmccool/web-speak",
+        "rel": "repository",
+        "type": "application/vnd.github.v3+json"
+  }],
   "id": "urn:uuid:{{{uuid}}}",
   "securityDefinitions": {
     "nosec_sc": {"scheme":"nosec"},
