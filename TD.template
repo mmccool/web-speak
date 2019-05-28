@@ -1,17 +1,16 @@
 {
-  "@context": ["http://www.w3.org/ns/td",
+  "@context": ["https://www.w3.org/2019/wot/td/v1",
                {
-                   "iot": "http://iotschema.org/",
-                   "http": "http://www.w3.org/2011/http#"
+                   "iot": "http://iotschema.org/"
                }
   ],
   "@type": ["Thing"],
-  "name": "Intel-WebSpeak-{{{hostname}}}",
+  "title": "Intel-WebSpeak-{{{hostname}}}",
   "description": "A simple text to speech service",
   "support": "mailto:michael.mccool@intel.com",
   "version": {"instance":"0.1.0"},
-  "created": "2018-09-10T06:30+00:00",
-  "lastModified": "2018-12-19T03:14+00:00",
+  "created": "2018-09-10T06:30:00Z",
+  "modified": "2019-05-28T03:14:00Z",
   "links": [{
         "href": "https://github.com/mmccool/web-speak",
         "rel": "repository",
@@ -33,35 +32,30 @@
         {
           "href": "{{{base}}}/say",
           "contentType": "application/json",
-          "op":"invokeaction",
-          "http:methodName": "POST"
+          "op":"invokeaction"
         },
         {
           "href": "{{{portal0}}}:{{{basicport}}}/api/say",
           "contentType": "application/json",
           "op":"invokeaction",
-          "http:methodName": "POST",
           "security": ["basic_sc"]
         },
         {
           "href": "{{{portal0}}}:{{{digestport}}}/api/say",
           "contentType": "application/json",
           "op":"invokeaction",
-          "http:methodName": "POST",
           "security": ["digest_sc"]
         },
         {
           "href": "{{{portal1}}}:{{{basicport}}}/api/say",
           "contentType": "application/json",
           "op":"invokeaction",
-          "http:methodName": "POST",
           "security": ["basic_sc"]
         },
         {
           "href": "{{{portal1}}}:{{{digestport}}}/api/say",
           "contentType": "application/json",
           "op":"invokeaction",
-          "http:methodName": "POST",
           "security": ["digest_sc"]
         }
       ]
