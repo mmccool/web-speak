@@ -23,6 +23,39 @@
     "digest_sc": {"scheme":"digest"}
   },
   "security": ["nosec_sc"],
+  "properties": {
+    "amplitude": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 200,
+       "forms": [
+                {
+		  "href": "{{{base}}}/amplitude",
+		  "contentType": "application/json"
+		},
+		{
+		  "href": "{{{portal0}}}:{{{basicport}}}/api/amplitude",
+		  "contentType": "application/json",
+		  "security": ["basic_sc"]
+		},
+		{
+		  "href": "{{{portal0}}}:{{{digestport}}}/api/amplitude",
+		  "contentType": "application/json",
+		  "security": ["digest_sc"]
+		},
+		{
+		  "href": "{{{portal1}}}:{{{basicport}}}/api/amplitude",
+		  "contentType": "application/json",
+		  "security": ["basic_sc"]
+		},
+		{
+		  "href": "{{{portal1}}}:{{{digestport}}}/api/amplitude",
+		  "contentType": "application/json",
+		  "security": ["digest_sc"]
+		}
+        ]
+    }
+  },
   "actions": {
     "say": {
       "input": {

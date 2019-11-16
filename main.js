@@ -25,6 +25,9 @@ for (let i=0; i<options.length; i++) {
 var http = require('http');
 var https = require('https');
 
+// Properties (and initial/default values)
+var amplitude = 100;
+
 // Operation scripts
 var child_process = require('child_process');
 var script_say = __dirname + '/scripts/say';
@@ -127,7 +130,7 @@ function speak_say(content,done) {
     });
 }
 
-// Process Post Method
+// Process Post Method - parse JSON body
 function processPost(req,res,done) {
     var stringData = '';
     req.on('data', function(data) {
@@ -142,10 +145,11 @@ function processPost(req,res,done) {
     // parse data (encoded as JSON)
     req.on('end', function() {
         try {
-            done(JSON.parse(stringData));
+            let val = JSON.parse(stringData);
+            done(val);
         } catch (error) {
             res.writeHead(405,{'Content-Type': 'text/plain'});
-            res.end('Malformed POST parameters');
+            res.end('Malformed POST parameters: ',error);
         }
     });
 }
@@ -169,7 +173,7 @@ function server(req,res,option) {
             switch (method) {
                 case 'POST':
                     processPost(req,res,(content) => {
-                        console.log('asked to say "'+content+'"');
+                        console.log('INVOKE say: "'+content+'"');
                         speak_say(content,(error,stdout,stderr) => {
                             if (error) {
                                 res.writeHead(500,{'Content-Type': 'text/plain'});
@@ -179,6 +183,38 @@ function server(req,res,option) {
                                 res.end('said "'+content+'"');
                             }
                         });
+                    });
+                    break;
+                default:
+                    res.writeHead(405,{'Content-Type': 'text/plain'});
+                    res.end('Method',method,'not supported');
+            }
+            break;
+        case '/api/amplitude':
+            switch (method) {
+                case 'GET':
+                    res.writeHead(200,{'Content-Type': 'application/json'});
+                    res.end(JSON.stringify(amplitude));
+                    console.log('READ amplitude: '+amplitude);
+                    break;
+                case 'PUT':
+                case 'POST':
+                    processPost(req,res,(amp) => {
+                        if (!Number.isInteger(amp) || Number.isNaN(amp)) {
+                            res.writeHead(500,{'Content-Type': 'text/plain'});
+                            res.end('Internal error - cannot set "amplitude" property - value cannot be converted to integer');
+                        } else if (amp < 0) {
+                            res.writeHead(500,{'Content-Type': 'text/plain'});
+                            res.end('Internal error - cannot set "amplitude" property - value cannot be negative');
+                        } else if (amp > 200) {
+                            res.writeHead(500,{'Content-Type': 'text/plain'});
+                            res.end('Internal error - cannot set "amplitude" property - value cannot be greater than 200');
+                        } else {
+                            res.writeHead(200,{'Content-Type': 'text/plain'});
+                            amplitude = amp;
+                            res.end(""+amplitude);
+                        }
+                        console.log("WRITE amplitude: "+amplitude);
                     });
                     break;
                 default:
