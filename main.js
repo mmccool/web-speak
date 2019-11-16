@@ -125,7 +125,12 @@ function regTD(i,option) {
 // Operations
 function speak_say(content,done) {
     console.log('saying "'+content+'"');
-    child_process.exec(script_say+' "'+content+'"',(error,stdout,stderr) => {
+    let command = script_say
+                +' -a '+amplitude
+                +' "'+content+'"';
+    console.log("executing command: "+command);
+    child_process.exec(command,
+    (error,stdout,stderr) => {
         done(error,stdout,stderr);
     });
 }
