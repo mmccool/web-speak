@@ -1,4 +1,37 @@
-#!/bin/sh
-echo "Usage: $0 \"string\""
+#!/bin/bash
+# defaults
+verbose=0
+a=100
+while getopts ":ha:" opt; do
+  case ${opt} in
+    h )
+      echo "Usage: $0 {options} \"string\""
+      echo "Options:"
+      echo "  -h               Help"
+      echo "  -a [0-200]       Amplitude (default is 100)"
+      ;;
+    a )
+      a=$OPTARG
+      if [ $verbose -gt 1 ] 
+      then
+        echo "a = $a"
+      fi
+      ;;
+    \? )
+      echo "Invalid option: $OPTARG" 1>&2
+      ;;
+    : )
+      echo "Invalid option: $OPTARG requires an argument" 1>&2
+      ;;
+  esac
+done
+shift $((OPTIND -1))
 # use espeak to say something, ignore garbage output
-espeak "$1" 2> /dev/null
+function join_by { local IFS="$1"; shift; echo "$*"; }
+text=$(join_by " " $@)
+if [ $verbose -gt 0 ] 
+then
+  echo "a: $a" 
+  echo "text: \"$text\"" 
+fi
+espeak -a $a \""$text"\" 2> /dev/null
