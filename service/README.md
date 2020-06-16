@@ -23,5 +23,7 @@ Instructions and configuration scripts to install as a systemd service.
    This should output the Thing Description for the service
     curl -v http://localhost:8090/junk
    This should output "Not Found" and the return code 404
+    curl http://localhost:8090/api/say -d '"hello world"'
+   Say "hello world"
 5. (Optional) Enable service to start at boot
     sudo systemctl enable webspeak
