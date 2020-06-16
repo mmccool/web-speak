@@ -13,7 +13,7 @@ var options = [
         tdirs: [],
         name: "http://" + hostname + '.local',
         portals: ["https://portal.mmccool.net","https://tiktok.mmccool.org"],
-        port: 8085,
+        port: 8090,
         basicport: 8096,
         digestport: 8097
     }
